@@ -56,13 +56,44 @@
   </div>
 
   <script>
-    // Example data (this will later come from Google Sheets)
-    const agents = [
-      { name: "Alice Johnson", type: "Agent", listings: 5 },
-      { name: "Dream Team", type: "Team", listings: 7 },
-      { name: "Bob Smith", type: "Agent", listings: 11 },
-      { name: "Peak Performers", type: "Team", listings: 14 }
-    ];
+   async function loadAgents() {
+  const response = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQr1p97bwhd2RHayh01TUPABtMm5sI4VdUmc1exatDVAbgYcbwIbdYdtiKSoal7HHGJTFcyB8hbsha6/pubhtml");
+  const text = await response.text();
+  const rows = text.trim().split("\n").slice(1); // skip headers
+
+  return rows.map(row => {
+    const [name, type, listings] = row.split(",");
+    return { name: name.trim(), type: type.trim(), listings: parseInt(listings) };
+  });
+}
+
+loadAgents().then(agents => {
+  const mountain = document.getElementById('mountain');
+  const yetiImages = ["./yeti1.png","./yeti2.png","./yeti3.png","./yeti4.png"];
+
+  function getSummitPosition(agent) {
+    const l = agent.listings;
+    const isTeam = agent.type.toLowerCase() === "team";
+
+    if ((isTeam && l >= 14) || (!isTeam && l >= 12)) return "80%";
+    if ((isTeam && l >= 12) || (!isTeam && l >= 10)) return "65%";
+    if ((isTeam && l >= 10) || (!isTeam && l >= 8)) return "50%";
+    if ((isTeam && l >= 8) || (!isTeam && l >= 6)) return "35%";
+    if ((isTeam && l >= 6) || (!isTeam && l >= 4)) return "20%";
+    return "5%"; 
+  }
+
+  agents.forEach((agent, index) => {
+    const yeti = document.createElement('div');
+    yeti.classList.add('yeti');
+    yeti.style.left = `${10 + index * 15}%`;
+    yeti.style.bottom = getSummitPosition(agent);
+    const imgSrc = yetiImages[index % yetiImages.length];
+    yeti.innerHTML = `<img src=\"${imgSrc}\" alt=\"Cartoon Yeti\"/><br>${agent.name}`;
+    mountain.appendChild(yeti);
+  });
+});
+
 
     const mountain = document.getElementById('mountain');
 
