@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yeti Listing Competition</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to top, #87ceeb, #ffffff);
+      overflow-x: hidden;
+    }
+    .mountain {
+      position: relative;
+      width: 100%;
+      height: 90vh;
+      background: url('./mountain.png') no-repeat center bottom;
+      background-size: contain;
+    }
+    .yeti {
+      position: absolute;
+      width: 60px;
+      transition: all 1s ease-in-out;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+    .yeti img {
+      width: 60px;
+      height: auto;
+    }
+    .summit-label {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.8);
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .summit1 { bottom: 20%; }
+    .summit2 { bottom: 35%; }
+    .summit3 { bottom: 50%; }
+    .summit4 { bottom: 65%; }
+    .summit5 { bottom: 80%; }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center; color:#003366; padding:10px;">🏔️ Yeti Listing Competition 🏔️</h1>
+  <div class="mountain" id="mountain">
+    <div class="summit-label summit1">⛰️ 4 listings (6 team)</div>
+    <div class="summit-label summit2">⛰️ 6 listings (8 team)</div>
+    <div class="summit-label summit3">⛰️ 8 listings (10 team)</div>
+    <div class="summit-label summit4">⛰️ 10 listings (12 team)</div>
+    <div class="summit-label summit5">🏆 12 listings (14 team)</div>
+  </div>
+
+  <script>
+    // Example data (this will later come from Google Sheets)
+    const agents = [
+      { name: "Alice Johnson", type: "Agent", listings: 5 },
+      { name: "Dream Team", type: "Team", listings: 7 },
+      { name: "Bob Smith", type: "Agent", listings: 11 },
+      { name: "Peak Performers", type: "Team", listings: 14 }
+    ];
+
+    const mountain = document.getElementById('mountain');
+
+    // Array of fun cartoon Yeti images (download and upload to your repo for reliability)
+    const yetiImages = [
+      "./yeti1.png",
+      "./yeti2.png",
+      "./yeti3.png",
+      "./yeti4.png"
+    ];
+
+    function getSummitPosition(agent) {
+      const l = agent.listings;
+      const isTeam = agent.type.toLowerCase() === "team";
+
+      if ((isTeam && l >= 14) || (!isTeam && l >= 12)) return "80%";
+      if ((isTeam && l >= 12) || (!isTeam && l >= 10)) return "65%";
+      if ((isTeam && l >= 10) || (!isTeam && l >= 8)) return "50%";
+      if ((isTeam && l >= 8) || (!isTeam && l >= 6)) return "35%";
+      if ((isTeam && l >= 6) || (!isTeam && l >= 4)) return "20%";
+      return "5%"; // base of the mountain
+    }
+
+    agents.forEach((agent, index) => {
+      const yeti = document.createElement('div');
+      yeti.classList.add('yeti');
+      yeti.style.left = `${10 + index * 15}%`;
+      yeti.style.bottom = getSummitPosition(agent);
+      // Pick a different yeti image for each agent
+      const imgSrc = yetiImages[index % yetiImages.length];
+      yeti.innerHTML = `<img src="${imgSrc}" alt="Cartoon Yeti"/><br>${agent.name}`;
+      mountain.appendChild(yeti);
+    });
+  </script>
+</body>
+</html>
